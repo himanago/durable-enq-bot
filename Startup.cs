@@ -10,11 +10,9 @@ namespace Sample.LineBot
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            var client = LineMessagingClient.Create(Environment.GetEnvironmentVariable("ChannelAccessToken"));
-
             builder.Services
-                .AddSingleton<ILineMessagingClient>(_ => client)
-                .AddSingleton<EnqBotApp>(_ => new EnqBotApp(client, Environment.GetEnvironmentVariable("ChannelSecret")));
+                .AddSingleton<ILineMessagingClient>(_ => LineMessagingClient.Create(Environment.GetEnvironmentVariable("ChannelAccessToken")))
+                .AddTransient<EnqBotApp>(s => new EnqBotApp(s.GetService<ILineMessagingClient>(), Environment.GetEnvironmentVariable("ChannelSecret")));
         }
     }
 }
